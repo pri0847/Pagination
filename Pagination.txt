@@ -1,0 +1,98 @@
+var var_pgid = 1;
+var SC = 0;
+var EC = 0;
+var start = 1;
+var end1 = 0;
+var var_ic = 0;
+
+function Pagination(var_Rowcount, var_RecCount) {
+    
+    $("#ul_pagination").empty();
+
+    start = start;
+    end = 10;
+    var var_li = "";
+    var prev = "<li class='page-item' id='li_prev'><a class='page-link'  onclick=\"BindPrev();\">Prev</a></li>";
+    var next = "<li class='page-item' id='li_next'><a class='page-link' onclick=\"BindNext();\">Next</a></li>";
+    var_ic = parseInt(var_Rowcount) / parseInt(var_RecCount);
+
+    var var_mod = var_Rowcount % (var_RecCount);
+    if (var_mod > 0) {
+        var_ic = parseInt(var_ic) + 1;
+    }
+    end = var_ic;
+    if (end1 > 0) {
+        if (var_ic >= end1) {
+            {
+                end = end1;
+            }
+        }
+        else {
+            start = (end - 9);
+            start = (start > 0) ? start : 1;
+        }
+    }
+    else if (end > 10) {
+        end = 10;
+    }
+    for (var i = start; i <= end; i++) {
+        var_li += "<li class='page-item ' id=\"pg_li_" + i + "\"><a class='page-link ' onclick=\"SearchData(" + i + ");\">" + i + "</a></li>";
+    }
+    $("#ul_pagination").append(prev);
+    $("#ul_pagination").append(var_li);
+    $("#ul_pagination").append(next);
+    $("#pg_li_" + var_pgid + " ").attr('class', 'page-item active');
+    if ($('#ul_pagination li.active').text() == "1") {
+        $('#li_prev').addClass('disabled');
+    }
+    if ($('#ul_pagination li.active').text() == var_ic) {
+        $('#li_next').addClass('disabled');
+    }
+    // CurrentPage();
+}
+
+function BindPrev() {
+    $('#ul_pagination li.active').removeClass('active').prev().addClass('active');
+    chknextprv();
+}
+function BindNext() {
+    $('#ul_pagination li.active').removeClass('active').next().addClass('active');
+    chknextprv();
+}
+
+function SearchData(var_id) {
+    $('#ul_pagination li.active').removeClass('active');
+    $("#pg_li_" + var_id).addClass('active');
+    chknextprv()
+}
+function chknextprv() {
+    if ($('#ul_pagination li.active').text() == "1") {
+        $('#li_prev').addClass('disabled');
+    }
+    else {
+        $('#li_prev').removeClass('disabled');
+    }
+    if ($('#ul_pagination li.active').text() == end) {
+        $('#li_next').addClass('disabled');
+    }
+    else {
+        $('#li_next').removeClass('disabled');
+    }
+    var ic = ($('#ul_pagination li.active').text());
+    // $("#hd_pg").val(ic);
+    BindData_Display();
+}
+
+// .aspx
+
+ <div id="ul_pagination_div">
+              <ul class="pagination" runat="server" id="ul_pagination"></ul></div>
+
+<script>
+    
+    function BindPagination() {
+            var Rec_Count = $("#ddl_rows").val(); var Rows = $("#hd_totalcount").val();
+            Pagination(Rows, Rec_Count);
+    }
+    
+</script>
